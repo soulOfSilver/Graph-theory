@@ -25,7 +25,7 @@ public:
     Vector(const Vector &other) {
         try{
             _vector = new TYPE[other._dim];
-            for(TYPE i = 0; i < other._dim; ++i){
+            for(dim_type i = 0; i < other._dim; ++i){
                 _vector[i] = other._vector[i];
             }
             _dim = other._dim;
@@ -42,13 +42,14 @@ public:
     Vector addElement(const TYPE &newElement){
         if(_freeSpace > 0){
             _vector[_dim - (_freeSpace + 1)] = newElement;
+            return *this;
         }
         else{
             Vector tmp(*this);
             try{
                 clear(*this);
                 Vector newVector(tmp._dim * 2);
-                for(dim_type i = 0; i < this._dim; ++i){
+                for(dim_type i = 0; i < _dim; ++i){
                     newVector._vector[i] = tmp._vector[i];
                 }
                 newVector._dim = tmp._dim;
@@ -60,6 +61,15 @@ public:
                 return tmp;
             }
         }
+    }
+
+    bool alreadyExist(const TYPE &element){
+        for(dim_type i = 0; i < _dim; ++i){
+            if(element.label == _vector[i].label){
+                return true;
+            }
+        }
+        return false;
     }
 
     ~Vector() {
@@ -76,9 +86,9 @@ public:
         vector._freeSpace = 0;
     }
 
-    Vector &operator=(const Vector &other){
+    Vector operator=(const Vector &other){
         try{
-            const Vector tmp(other);
+            Vector tmp(other);
             return tmp;
         }
         catch(...){
