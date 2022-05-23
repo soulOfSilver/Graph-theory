@@ -1,6 +1,8 @@
 #ifndef UNWEIGHTED_GRAPHS
 #define UNWEIGHTED_GRAPHS
 
+#include "Vector.hpp"
+
 template <typename LABEL>
 class UnweightedGraphs
 {
@@ -14,7 +16,7 @@ public:
     {
         try
         {
-            _nodes = new node[other._numberOfNodes];
+            _nodes = new Vector<node>(other._numberOfNodes);
             _adjacencyMatrix = new unweighted_type[other._numberOfNodes];
 
             for (cardinality_type i = 0; i < other._numberOfNodes; ++i)
@@ -51,15 +53,26 @@ public:
         }
         catch (...)
         {
-            clear(tmp);
+            return nullptr;
         }
     }
 
-    clear(UnweightedGraphs &graph)
+    void clear(UnweightedGraphs &graph)
     {
         delete graph._nodes;
+        _nodes = nullptr;
         delete graph._adjacencyMatrix;
+        _adjacencyMatrix = nullptr;
         graph._numberOfNodes = 0;
+    }
+
+    void addNode(const LABEL &label){
+        if(!_nodes->alreadyExist(label)){
+            _nodes->addElement(label);
+        }
+        else{
+            std::cout << "Il nodo è già presente all'interno del grafo" << std::endl;
+        }
     }
 
 private:
@@ -133,7 +146,7 @@ private:
         }
     };
 
-    node *_nodes;
+    Vector<node> *_nodes;
     cardinality_type _numberOfNodes;
     unweighted_type **_adjacencyMatrix;
 };
